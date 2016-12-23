@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="css/reset.min.css">
+    <link rel="stylesheet" href="css/swiper.min.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/animate.css">
+    <script>
+        var desW = 640;//设计稿宽度
+        var winW = document.documentElement.clientWidth;//设备的宽度
+        document.documentElement.style.fontSize = winW / desW * 100 + 'px';
+    </script>
+</head>
+<body>
+<section class="main">
+    <div class="music">
+        <audio src="audio/beyond.mp3" loop preload="none" id="beyond"></audio>
+        <!--
+        preload:none 不提前进行预加载
+                auto  提前进行预加载-->
+    </div>
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide slide1">
+                <img src="img/swiper/page1-text1.png" alt="">
+                <img src="img/swiper/page1-text2.png" alt="">
+                <img src="img/swiper/page1-text3.png" alt="">
+                <img src="img/swiper/page1-text4.png" alt="">
+            </div>
+            <div class="swiper-slide slide2">
+                <img src="img/swiper/page2-text1.png" alt="">
+                <img src="img/swiper/page2-text2.png" alt="">
+                <img src="img/swiper/page2-text3.png" alt="">
+                <img src="img/swiper/page2-text4.png" alt="">
+            </div>
+        </div>
+    </div>
+</section>
+<script src="js/swiper.min.js"></script>
+<script>
+    /*1.不循环模式的处理*/
+    /* var mySwiper = new Swiper(".swiper-container", {
+     direction: "vertical",
+     onTransitionEnd: function (swiper) {
+     var curIndex = swiper.activeIndex;//当前显示的滑块的索引
+     var slides = swiper.slides;//获得所有的滑块
+     [].forEach.call(slides, function (item, index) {
+     item.id = "";//初始化，把所有滑块的id名去掉
+     if (index == curIndex) {
+     item.id = "page" + (curIndex + 1)
+     }
+     })
+
+     },
+     onInit: function (swiper) {
+     //做初始化，给第一个加上id名
+     var slides = swiper.slides;
+     slides[0].id = 'page1';
+     }
+     })*/
+    /*2循环处理*/
+    var mySwiper = new Swiper('.swiper-container', {
+        direction: 'vertical',
+        loop: true,
+        onTransitionEnd: function (swiper) {
+            /*把真实的第一个滑块复制了一份放在最后的位置
+             * 把真实的最后一个滑块复制了一份放在第一个位置*/
+            var slides = swiper.slides;
+            var curIndex = swiper.activeIndex;
+            var lastIndexSlide = slides.length - 1;//现在的最后一个滑块
+            var trueIndexSlide = slides.length - 2;//原来最后一个滑块
+            /*  console.log(slides.length);*/
+            [].forEach.call(slides, function (item, index) {
+                /*把id名去掉*/
+                item.id = "";
+                if (curIndex == index) {
+
+                    switch (index) {
+                        case 0:
+                            item.id = "page" + trueIndexSlide;
+                            break;
+                        case lastIndexSlide:
+                            item.id = "page1";
+                                 break;
+                        default:
+                            item.id = "page" + curIndex;
+                            break;
+                    }
+                }
+
+            })
+        }
+    });
+    //音频处理
+    var music=document.querySelector('.music');
+    var beyond=document.querySelector('#beyond');
+    window.setTimeout(function(){
+        beyond.play();
+        beyond.addEventListener('canplay',function(){
+            music.className="music musicCur";
+        })
+    },1000);
+    music.addEventListener('click',function(){
+        //通过paused这个属性判断音频文件是播放的还是停止的 beyond.paused=true,说明音频文件目前是停止播放
+        //让音频文件播放play(),让音频文件停止是pause()方法
+        if(beyond.paused){
+            beyond.play();
+            music.className="music musicCur";
+        }else{
+            beyond.pause();
+            music.className="music";
+            music.style.opacity=1;
+        }
+    },false)
+</script>
+</body>
+</html>
